@@ -1,47 +1,52 @@
 import mongoose from "mongoose";
 
+// Definir schema (Antiguamente modelo)
 const UserSchema = mongoose.Schema({
-    nombre: {
+    // Se crea un objeto por cada dato
+    nombre:{
         type: String,
-        required: [true, 'El nombre es obligatorio']
+        required: [true,'El campo es obligatorio'], // Crea un campo obligatorio
     },
-    correo: {
+    correo:{
         type: String,
-        required: [true, 'El correo es obligatorio'],
         unique: true
     },
-    password: {
+    password:{
         type: String,
-        required: [true, 'La contraseña es obligatoria']
+        required: [true,'Este campo es obligatorio']
     },
-    img: {
+    img:{
+        type: String // Es String pq se le pasa la direccion de la imagen
+    },
+    phone:{
         type: String,
+        minLength: 8,
+        maxLength:8,
+        required: [true,'Este campo es requerido']
     },
-    telefono: {
-        type: String,
-        minLenght: 8,
-        maxLenght: 8,
-        required: true0
-    },
-    role: {
+    // Roles Admin y User
+    rol:{
         type: String,
         required: true,
-        enum:['ADMIN_ROLE','USER_ROLE']
+        enum: ['ADMIN_ROLE','USER_ROLE']
     },
-    estado: {
+    estado:{
         type: Boolean,
         default: true
     },
-    google: {
+    // Log que indica si se logueo con google o no
+    google:{
         type: Boolean,
         default: false
     }
-});
+})
 
-UserSchema.metods.toJson = function(){
-    const{__v,password,_id, ...usuario} = this.toObject();
-    usuario.uid=_id;
-    return usuario;
+// Similar al ToString
+UserSchema.methods.toJSON= function(){
+    const {__v,password,_id,___usuario} = this.object() // todos los que no se usan
+    usuario.uid = _id
+    return usuario
 }
 
-export default mongoose.model('User',UserSchema);
+// Exportacion por default
+export default mongoose.model('User',UserSchema)
