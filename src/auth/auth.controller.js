@@ -2,7 +2,7 @@ import bcryptjs from "bcryptjs";
 import Usuario from '../users/user.model.js'
 import {generarJWT} from '../helpers/generate-jwt.js'
 
-export const login= async()=>{
+export const login= async(res, req)=>{
     const {correo,password} = req.body
 
     try {
@@ -53,10 +53,11 @@ export const login= async()=>{
 
 }
 
-export const register = async()=>{
+export const register = async(res, req)=>{
 
-    const {nombre,correo,password,rol,phone} = req.body
-    const user = new Usuario({nombre,correo,password,rol,phone})
+    const { nombre, correo, password, phone, rol } = req.body
+    console.log(req.body )
+    const user = new Usuario({nombre, correo, password, phone, rol})
 
     // Encriptar la contraseña
     const salt = bcryptjs.genSaltSync() // Tipo de encrypt
@@ -64,7 +65,7 @@ export const register = async()=>{
 
     await user.save()
 
-    req.status(200).json({
+    res.status(200).json({
         user
     })
 }
