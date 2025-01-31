@@ -2,7 +2,8 @@ import bcryptjs from "bcryptjs";
 import Usuario from '../users/user.model.js'
 import {generarJWT} from '../helpers/generate-jwt.js'
 
-export const login= async(res, req)=>{
+export const login= async(req,res)=>{
+    console.log('Luis')
     const {correo,password} = req.body
 
     try {
@@ -11,53 +12,53 @@ export const login= async(res, req)=>{
 
         // *****VALIDACIONES***********
         if (!user) {
-            return req.status(400).json({
+            return res.status(400).json({
                 msg: 'Credenciales incorrectas, el correo no esta registrado'
             })
         }
 
         if (!user.estado) {
-            return req.status(400).json({
+            return res.status(400).json({
                 msg: 'El usuario no existe en la DB'
             })
         }
-
+        
         //BCrypt Permite comparar passwords
-        const validPass = bcryptjs.compareSync(password,user.password)
-
+        const validPass = bcryptjs.compareSync(password, user.password)
+        console.log('Manuel')
         if (!validPass) {
-            return req.status(400).json({
+            return res.status(400).json({
                 msg: 'La contraseña es incorrecta'
             })
         }
-
+        
         // *****VALIDACIONES***********
 
 
 
-
+        console.log('Antes')
         const token = await generarJWT(user.id)
-
-        req.status(200).json({
+        console.log('Despues')
+        res.status(200).json({
             msg: 'Usuario Correcto',
-            usuario,
+            user,
             token
         })
 
     } catch (e) {
         console.log(e)
-        req.status(500).json({
+        res.status(500).json({
             msg: 'Comuniquese con su admin'
         })
     }
 
 }
 
-export const register = async(res, req)=>{
+export const register = async(req,res)=>{
 
-    const { nombre, correo, password, phone, rol } = req.body
-    console.log(req.body )
-    const user = new Usuario({nombre, correo, password, phone, rol})
+    const {nombre,correo,password,rol,phone} = req.body
+    console.log(req.body)
+    const user = new Usuario({nombre,correo,password,rol,phone})
 
     // Encriptar la contraseña
     const salt = bcryptjs.genSaltSync() // Tipo de encrypt
