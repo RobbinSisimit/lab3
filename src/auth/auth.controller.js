@@ -1,72 +1,97 @@
-import bcryptjs from "bcryptjs";
-import Usuario from '../users/user.model.js'
-import {generarJWT} from '../helpers/generate-jwt.js'
+import Usuario from '../users/user.model.js';
+import { hash, verify } from 'argon2';
+import { generarJWT} from '../helpers/generate-jwt.js';
 
-export const login= async(req,res)=>{
-    console.log('Luis')
-    const {correo,password} = req.body
+export const login = async (req, res) => {
+
+    const { email, password, username } = req.body;
 
     try {
-        const user = await Usuario.findOne({correo})
-
-
-        // *****VALIDACIONES***********
-        if (!user) {
-            return res.status(400).json({
-                msg: 'Credenciales incorrectas, el correo no esta registrado'
-            })
-        }
-
-        if (!user.estado) {
-            return res.status(400).json({
-                msg: 'El usuario no existe en la DB'
-            })
-        }
         
-        //BCrypt Permite comparar passwords
-        const validPass = bcryptjs.compareSync(password, user.password)
-        console.log('Manuel')
-        if (!validPass) {
+        const lowerEmail = email ? email.toLowerCase() : '';
+        const lowerUsername = username ? username.toLowerCase() : '';
+
+        const user = await Usuario.findOne({
+            $or: [{ email: lowerEmail }, { username: lowerUsername }]
+        });
+
+        console.log(lowerUsername)
+
+        if(!user){
+            return res.status(400).json({
+                msg: 'Credenciales incorrectas, Correo no existe en la base de datos'
+            });
+        }
+
+        if(!user.estado){
+            return res.status(400).json({
+                msg: 'El usuario no existe en la base de datos'
+            });
+        }
+
+        const validPassword = await verify(user.password, password);
+        if(!validPassword){
             return res.status(400).json({
                 msg: 'La contraseña es incorrecta'
-            })
+            });
         }
-        
-        // *****VALIDACIONES***********
 
+        const token = await generarJWT( user.id );
 
-
-        console.log('Antes')
-        const token = await generarJWT(user.id)
-        console.log('Despues')
-        res.status(200).json({
-            msg: 'Usuario Correcto',
-            user,
-            token
+        return res.status(200).json({
+            msg: 'Inicio de sesión exitoso!!',
+            userDetails: {
+                username: user.username,
+                token: token,
+                profilePicture: user.profilePicture
+            }
         })
 
     } catch (e) {
-        console.log(e)
-        res.status(500).json({
-            msg: 'Comuniquese con su admin'
+        
+        console.log(e);
+
+        return res.status(500).json({
+            message: "Server error",
+            error: e.message
         })
     }
-
 }
 
-export const register = async(req,res)=>{
+export const register = async (req, res) => {
+    try {
+        const data = req.body;
 
-    const {nombre,correo,password,rol,phone} = req.body
-    console.log(req.body)
-    const user = new Usuario({nombre,correo,password,rol,phone})
+        let profilePicture = req.file ? req.file.filename : null;
 
-    // Encriptar la contraseña
-    const salt = bcryptjs.genSaltSync() // Tipo de encrypt
-    user.password = bcryptjs.hashSync(password,salt)
+        const encryptedPassword = await hash (data.password);
 
-    await user.save()
+        const user = await Usuario.create({
+            name: data.name,
+            surname: data.surname,
+            username: data.username,
+            email: data.email,
+            phone: data.phone,
+            password: encryptedPassword,
+            role: data.role,
+            profilePicture
+        })
 
-    res.status(200).json({
-        user
-    })
+        return res.status(201).json({
+            message: "User registered successfully",
+            userDetails: {
+                user: user.email
+            }
+        });
+
+    } catch (error) {
+        
+        console.log(error);
+
+        return res.status(500).json({
+            message: "User registration failed",
+            error: err.message
+        })
+
+    }
 }

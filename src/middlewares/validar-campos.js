@@ -1,12 +1,13 @@
-import { validationResult } from "express-validator";
 
-export const validarCampos= (req,res,next)=>{ // Ayuda a que no hayan errores en la respuesta
-    const errores = validationResult(req)
+import { validationResult } from 'express-validator';
 
-    if (!errores.isEmpty()) {
-        return res.status(400).json(errores)
+export const validarCampos = (req, res, next) => {
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return next(errors);
     }
 
-
-    next()
+    next();
 }

@@ -1,8 +1,12 @@
-import rateLimit from "express-rate-limit";
+import rateLimit from 'express-rate-limit';
 
-const limiter = rateLimit({ //Recibe un objeto con configuraciones
-    windowMs: 15*60*1000,
-    max: 100 // Solo cien peticiones para evitar ataques
-})
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100,
+    message: {
+        success: false,
+        msg: "Demasiadas peticiones desde esta IP, por favor intente de nuevo después de 15 minutos"
+    }
+});
 
-export default limiter // Asi ya no se deben de poner las llaves
+export default limiter;
