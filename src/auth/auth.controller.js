@@ -15,8 +15,7 @@ export const login = async (req, res) => {
             $or: [{ email: lowerEmail }, { username: lowerUsername }]
         });
 
-        console.log(lowerUsername)
-
+        console.log(lowerEmail)
         if(!user){
             return res.status(400).json({
                 msg: 'Credenciales incorrectas, Correo no existe en la base de datos'
