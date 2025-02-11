@@ -30,16 +30,6 @@ router.get(
     searchPet
 )
 
-router.delete(
-    '/:id',
-    [
-        validarJWT,
-        check("id", "no es un Id validio").isMongoId(),
-        validarCampos
-    ],
-    deletePet
-)
-
 router.put(
     "/:id",
     uploadPetPicture.single('petPicture'),
@@ -49,6 +39,17 @@ router.put(
         validarCampos
     ],
     updatePet
+)
+
+
+router.delete(
+    '/:id',
+    [
+        validarJWT,
+        check("id", "no es un Id validio").isMongoId(),
+        validarCampos
+    ],
+    deletePet
 )
 
 export default router;

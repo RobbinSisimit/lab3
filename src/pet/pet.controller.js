@@ -16,12 +16,13 @@ export const savePet = async (req, res) => {
         const pet = new Pet({
             ...data,
             keeper: user._id
-        })
+        });
 
         await pet.save();
 
         res.status(200).json({
-            success: true,
+            succes: true,
+            msg:'pet saved succesfuly',
             pet
         })
 
@@ -106,25 +107,6 @@ export const searchPet = async (req,res)=>{
  
 }
 
-export const deletePet = async (req, res) =>{
-    const {id} = req.params;
-    try{
-        await Pet.findByIdAndUpdate(id ,{ status: false});
-
-        res.status(200).json({
-            success: true,
-            message: 'Pet Eliminado exitoso'
-        })
-
-    }catch(error){
-        res.status(500).json({
-            seccess: false,
-            message: 'error al eliminar mascora',
-            error
-        })
-    }
-}
-
 export const updatePet = async (req, res = response) => {
     try {
         const { id } = req.params;
@@ -142,6 +124,25 @@ export const updatePet = async (req, res = response) => {
         res.status(500).json({
             success: false,
             msg:'Error to update the pet',
+            error
+        })
+    }
+}
+
+export const deletePet = async (req, res) =>{
+    const {id} = req.params;
+    try{
+        await Pet.findByIdAndUpdate(id ,{ status: false});
+
+        res.status(200).json({
+            success: true,
+            message: 'Pet Eliminado exitoso'
+        })
+
+    }catch(error){
+        res.status(500).json({
+            seccess: false,
+            message: 'error al eliminar mascora',
             error
         })
     }

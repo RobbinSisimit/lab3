@@ -32,4 +32,4 @@ const PetSchema = Schema({
     versionKey: false
 });
 
-export default model('pet', PetSchema);//posible P mayuscula
+export default model('Pet', PetSchema);//posible P mayuscula

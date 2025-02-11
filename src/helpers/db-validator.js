@@ -1,5 +1,6 @@
 import Role from '../role/role.model.js';
 import User from '../users/user.model.js';
+import Pet from '../pet/pet.model.js';
 
 export const esRoleValido = async (role = '') => {
 

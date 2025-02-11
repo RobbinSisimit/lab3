@@ -22,7 +22,7 @@ const middlewares = (app) => {
 const routes = (app) => {
     app.use("/adoptionSystem/v1/auth", authRoutes);
     app.use("/adoptionSystem/v1/users", userRoutes);
-    app.use("/adoptionSystem/v1/pet", petRoutes);
+    app.use("/adoptionSystem/v1/pets", petRoutes);
 }
 
 const conectarDB = async () => {
