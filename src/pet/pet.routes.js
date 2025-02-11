@@ -3,8 +3,8 @@ import { check } from "express-validator"
 import { getPets, savePet, searchPet, deletePet, updatePet } from "./pet.controller.js"
 import { validarCampos} from "../middlewares/validar-campos.js"
 import { validarJWT } from "../middlewares/validar-jwt.js"
-import { uploadProfilePicture } from "../middlewares/multer-upload.js"
-import { existeUsuarioById } from "../helpers/db-validator.js"
+import { uploadPetPicture } from "../middlewares/multer-upload.js"
+import { existePetById } from "../helpers/db-validator.js";
 
 const router = Router();
 

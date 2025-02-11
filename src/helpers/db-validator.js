@@ -26,3 +26,11 @@ export const existeUsuarioById = async (id = '') => {
         throw new Error(`El ID ${id} no existe`);
     }
 }
+
+export const existePetById = async (id = '') =>{
+    const existePet = await Pet.findById(id);
+
+    if(!existePet) {
+        throw new Error(`The pet with ID ${id} is not exists in the database`);
+    }
+}
