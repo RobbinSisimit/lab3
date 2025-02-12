@@ -1,0 +1,19 @@
+[{
+  "_id": {
+    "$oid": "67abd6301a561cb6ad343df8"
+  },
+  "name": "Maximo",
+  "description": "Perro policia",
+  "age": 1,
+  "type": "EXPERIMENTADO",
+  "keeper": {
+    "$oid": "67abd46c1a561cb6ad343df1"
+  },
+  "status": true,
+  "createdAt": {
+    "$date": "2025-02-11T22:58:56.284Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-11T23:36:32.592Z"
+  }
+}]
