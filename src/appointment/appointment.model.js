@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const AppointmentSchema = Schema({
-    keeper:{
+    autor:{
         type: Schema.Types.ObjectId,
         ref: 'user',
         required: true
@@ -11,22 +11,13 @@ const AppointmentSchema = Schema({
         ref: 'pet',
         required: true
     },
-    date:{
-        type: String,
-        required:true
-    },
-    status:{
-        type: String,
-        enum: ['Pendiente', 'Confirmado', 'Cancelado', 'Completado'],
-        default:'Pendiente'
-    },
     reason:{
         type: String
     },
-    createdAt:{
-        type: Date,
-        default: Date.now
-    }
+    status:{
+        type: String,
+        default:'Confirmado'
+    },
 },
     {
         timestamps: true,

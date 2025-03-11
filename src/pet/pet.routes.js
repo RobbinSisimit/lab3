@@ -3,7 +3,6 @@ import { check } from "express-validator";
 import { savePet, getPets, searchPet, deletePet, updatePet } from "./pet.controller.js";
 import { validarCampos } from "../middlewares/validar-campos.js";
 import { validarJWT } from '../middlewares/validar-jwt.js'
-import { uploadPetPicture } from "../middlewares/multer-upload.js";
 import { existePetById } from "../helpers/db-validator.js";
 import { tieneRol } from "../middlewares/validar-roles.js";
 
@@ -33,7 +32,6 @@ router.get(
 
 router.put(
     "/:id",
-    uploadPetPicture.single('petPicture'),
     [
         check("id", "ID is not valid").isMongoId(),
         check("id").custom(existePetById),

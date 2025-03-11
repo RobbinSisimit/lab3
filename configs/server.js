@@ -10,7 +10,10 @@ import authRoutes from '../src/auth/auth.routes.js'
 import userRoutes from '../src/users/user.routes.js'
 import petRoutes from "../src/pet/pet.routes.js"
 
-const middlewares = (app) => {
+import Usuario from "../src/users/user.model.js";
+import { hash } from "argon2";
+
+const configurarMiddlewares = (app) => {
     app.use(express.urlencoded({ extended: false }));
     app.use(cors());
     app.use(express.json());
@@ -19,11 +22,36 @@ const middlewares = (app) => {
     app.use(limiter);
 }
 
-const routes = (app) => {
-    app.use("/adoptionSystem/v1/auth", authRoutes);
-    app.use("/adoptionSystem/v1/users", userRoutes);
-    app.use("/adoptionSystem/v1/pets", petRoutes);
+const configurarRutas = (app) => {
+    app.use("/mascotas/v1/auth", authRoutes);
+    app.use("/mascotas/v1/users", userRoutes);
+    app.use("/mascotas/v1/pets", petRoutes);
 }
+
+const crearAdmin = async () => {
+    try {
+        const adminExistente = await Usuario.findOne({ role: "ADMIN_ROLE" });
+
+        if (!adminExistente) {
+            const passwordEncriptada = await hash("Admin123");
+
+            const admin = new Usuario({
+                name: "Admin",
+                username: "admin",
+                email: "admin@gmail.com",
+                password: passwordEncriptada,
+                role: "ADMIN_ROLE"
+            });
+
+            await admin.save();
+            console.log("Administrador creado exitosamente :p");
+        } else {
+            console.log("El administrador ya existe.:p");
+        }
+    } catch (error) {
+        console.error("Error al crear el administrador :(", error);
+    }
+};
 
 const conectarDB = async () => {
     try{
@@ -39,13 +67,12 @@ export const initServer = async () => {
     const app = express();
     const port = process.env.PORT || 3000;
 
-    try {
-        middlewares(app);
-        conectarDB();
-        routes(app);
-        app.listen(port);
-        console.log(`Server running on port: ${port}`);
-    } catch (err) {
-        console.log(`Server init failed: ${err}`);
-    }
+    await conectarDB();
+    await crearAdmin();
+    configurarMiddlewares(app);
+    configurarRutas(app);
+
+    app.listen(port, () => {
+        console.log(`Server Running On Port ${port}`);
+    });
 }

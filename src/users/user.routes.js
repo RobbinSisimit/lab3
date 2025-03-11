@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { check} from "express-validator";
-import  {getUsers, getUserById, updateUser, deleteUser, updatePassword } from "./user.controller.js";
+import  {getUsers, getUserById, updateUser, deleteUser } from "./user.controller.js";
 import { existeUserById } from "../helpers/db-validator.js";
 import { validarCampos } from "../middlewares/validar-campos.js";
-import { uploadProfilePicture} from "../middlewares/multer-upload.js";
 import { tieneRol } from "../middlewares/validar-roles.js";
 import { validarJWT} from "../middlewares/validar-jwt.js"
 
@@ -23,7 +22,6 @@ router.get(
 
 router.put(
     "/:id",
-    uploadProfilePicture.single('profilePicture'),
     [
         check("id", "id is invalid").isMongoId(),
         check("id").custom(existeUserById),
@@ -32,21 +30,11 @@ router.put(
     updateUser
 )
 
-router.put(
-    "/updatePassword/:id",
-    [
-        validarJWT,
-        check("id", "ID is not valid").isMongoId(),
-        validarCampos
-    ],
-    updatePassword
-)
-
 router.delete(
     "/:id",
     [
         validarJWT,
-        tieneRol("ADMIN_ROLE", "VENTAS_ROLE"),
+        tieneRol("ADMIN_ROLE"),
         check("id", "id is invalid").isMongoId(),
         check("id").custom(existeUserById),
         validarCampos

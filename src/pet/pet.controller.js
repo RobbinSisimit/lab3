@@ -15,7 +15,7 @@ export const savePet = async (req, res) => {
 
         const pet = new Pet({
             ...data,
-            keeper: user._id
+            propietario: user._id
         });
 
         await pet.save();

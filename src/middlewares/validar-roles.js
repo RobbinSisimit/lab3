@@ -1,17 +1,21 @@
 export const tieneRol = (...roles) =>{
-    return (req, res, next) =>{
-        if(!req.usuario){
+    return (req, res, next) => {
+        if (!req.usuario) {
             return res.status(500).json({
                 success: false,
-                msg: 'Is need to verify a role '
-            })
+                msg: "Se quiere verificar un Role Sin Validar El Token Antes"
+            });
         }
-        if(!roles.includes(req.usuario.role)){
-            return res.status(401).json({
+
+        const { role } = req.usuario;
+        
+        if (!roles.includes(role)) {
+            return res.status(403).json({
                 success: false,
-                msg:  `User is not authorized, his role is ${req.usuario.role}, the roles authorized are ${roles}`
-            })
+                msg: `Usuario No Autorizado, Posee Un Rol ${req.usuario.role}, los roles autorizados son ${roles}`
+            });
         }
+
         next();
     }
 }

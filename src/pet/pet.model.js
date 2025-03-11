@@ -13,12 +13,7 @@ const PetSchema = Schema({
         type: Number,
         required: true
     },
-    type: {
-        type: String,
-        uppercase: true,
-        required: true
-    },
-    keeper: {
+    propietario: {
         type: Schema.Types.ObjectId,
         ref: 'user',
         required: true
@@ -32,4 +27,4 @@ const PetSchema = Schema({
     versionKey: false
 });
 
-export default model('Pet', PetSchema);//posible P mayuscula
+export default model('Pet', PetSchema);

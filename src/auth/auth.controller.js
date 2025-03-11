@@ -61,19 +61,14 @@ export const register = async (req, res) => {
     try {
         const data = req.body;
 
-        let profilePicture = req.file ? req.file.filename : null;
-
         const encryptedPassword = await hash (data.password);
 
         const user = await Usuario.create({
             name: data.name,
-            surname: data.surname,
             username: data.username,
             email: data.email,
-            phone: data.phone,
             password: encryptedPassword,
-            role: data.role,
-            profilePicture
+            role: data.role
         })
 
         return res.status(201).json({
