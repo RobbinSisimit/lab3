@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { check } from "express-validator";
-import { savePet, getPets, searchPet, deletePet, updatePet } from "./pet.controller.js";
+import { crearMascota, listarMascotas, eliminarMascota, actulizarMascota } from "./pet.controller.js";
 import { validarCampos } from "../middlewares/validar-campos.js";
 import { validarJWT } from '../middlewares/validar-jwt.js'
 import { existePetById } from "../helpers/db-validator.js";
@@ -11,24 +11,18 @@ const router = Router();
 router.post(
     "/",
     [
-        validarJWT,
-        check('email', 'Email is invalid').not().isEmpty(),
-        validarCampos
+        validarJWT, // Middleware para validar JWT y autenticación
+        check("name", "El nombre de la mascota es obligatorio").not().isEmpty(), // Validación del nombre de la mascota
+        check("description", "La descripción de la mascota es obligatoria").not().isEmpty(), // Validación de la descripción
+        check("age", "La edad de la mascota es obligatoria").isNumeric(), // Validación de la edad (número)
+        check("email", "El correo electrónico del propietario es obligatorio").not().isEmpty(), // Validación del correo electrónico
+        check("email", "El correo electrónico no es válido").isEmail(), // Validación de formato de correo
+        validarCampos 
     ],
-    savePet
+    crearMascota
 )
 
-router.get("/",getPets)
-
-router.get(
-    "/:id",
-    [
-        validarJWT,
-        check("id", "ID is not valid").isMongoId(),
-        validarCampos
-    ],
-    searchPet
-)
+router.get("/",listarMascotas)
 
 router.put(
     "/:id",
@@ -37,7 +31,7 @@ router.put(
         check("id").custom(existePetById),
         validarCampos
     ],
-    updatePet
+    actulizarMascota
 )
 
 router.delete(
@@ -48,7 +42,7 @@ router.delete(
         check("id", "ID is invalid").isMongoId(),
         validarCampos
     ],
-    deletePet
+    eliminarMascota
 )
 
 export default router;

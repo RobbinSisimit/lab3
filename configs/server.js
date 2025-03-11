@@ -9,6 +9,7 @@ import limiter from '../src/middlewares/validar-cant-peticiones.js';
 import authRoutes from '../src/auth/auth.routes.js'
 import userRoutes from '../src/users/user.routes.js'
 import petRoutes from "../src/pet/pet.routes.js"
+import citaRoute from "../src/appointment/appointment.routes.js"
 
 import Usuario from "../src/users/user.model.js";
 import { hash } from "argon2";
@@ -26,6 +27,7 @@ const configurarRutas = (app) => {
     app.use("/mascotas/v1/auth", authRoutes);
     app.use("/mascotas/v1/users", userRoutes);
     app.use("/mascotas/v1/pets", petRoutes);
+    app.use("/mascotas/v1/appointments", citaRoute);
 }
 
 const crearAdmin = async () => {

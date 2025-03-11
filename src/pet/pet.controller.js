@@ -1,7 +1,7 @@
 import User from '../users/user.model.js'
 import Pet from './pet.model.js'
 
-export const savePet = async (req, res) => {
+export const crearMascota = async (req, res) => {
     try{
         const data = req.body;
         const user = await User.findOne({email: data.email});
@@ -20,6 +20,8 @@ export const savePet = async (req, res) => {
 
         await pet.save();
 
+        
+
         res.status(200).json({
             succes: true,
             msg:'pet saved succesfuly',
@@ -35,7 +37,7 @@ export const savePet = async (req, res) => {
     }
 }
 
-export const getPets = async (req, res) => {
+export const listarMascotas = async (req, res) => {
     const { limite = 10, desde = 0} = req.query;
     const query = {status: true};
 
@@ -73,41 +75,7 @@ export const getPets = async (req, res) => {
     }
 }
 
-export const searchPet = async (req,res)=>{
- 
-    const{id}=req.params;
- 
-    try {
-        const pet = await Pet.findById(id);
- 
-        if(!pet){
-            return res.status(400).json({
-                succes:false,
-                message: 'Mascota no encontrada'
-            })
-        }
- 
-        const owner = await User.findById(pet.keeper);
- 
-        res.status(200).json({
-            succes: true,
-            pet:{
-                ...pet.toObject(),
-                keeper: owner ? owner.nombre : "Propietario no encontrado"
-            }
-        })
- 
-    } catch (error) {
-        res.status(500).json({
-            succes: false,
-            message:'error al buscar mascota',
-            error
-        })
-    }
- 
-}
-
-export const updatePet = async (req, res = response) => {
+export const actulizarMascota = async (req, res = response) => {
     try {
         const { id } = req.params;
         const { _id, ...data } = req.body;
@@ -129,7 +97,7 @@ export const updatePet = async (req, res = response) => {
     }
 }
 
-export const deletePet = async (req, res) =>{
+export const eliminarMascota = async (req, res) =>{
     const {id} = req.params;
     try{
         await Pet.findByIdAndUpdate(id ,{ status: false});

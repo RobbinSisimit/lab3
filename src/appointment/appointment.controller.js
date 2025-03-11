@@ -2,45 +2,45 @@ import User from '../users/user.model.js';
 import Pet from '../pet/pet.model.js';
 import Appointment from './appointment.model.js';
 
-export const crearCita = async (req, res) =>{
+export const crearCita = async (req, res) => {
     try {
-        const data = req.body
-        const user = await User.findOne({email:data.email});
-        const pet = await Pet.findOne({name: data.name});
+        const data = req.body;
+        const user = await User.findOne({ email: data.email });
+        const pet = await Pet.findOne({ name: data.name });  // Buscar mascota por nombre
 
-        if(!user){
-            return res.status(404).josn({
+        if (!user) {
+            return res.status(404).json({
                 success: false,
                 msg: 'No hay usuario con ese ID'
-            })
+            });
         }
 
-        if(!pet){
-            return res.status(404),json({
+        if (!pet) {
+            return res.status(404).json({
                 success: false,
-                msg: 'no hay mascota con ese ID :(('
-            })
+                msg: 'No hay mascota con ese nombre'
+            });
         }
 
-        const appointmet = new Appointment({
+        const appointment = new Appointment({
             ...data,
             autor: user._id,
-            pet: pet.name
+            pet: pet._id // Guardar el ObjectId de la mascota
         });
 
-        await appointmet.save();
+        await appointment.save();
 
         res.status(200).json({
             success: true,
-            msg: 'la cita hacido creado :D',
-            appointmet
-        })
+            msg: 'La cita ha sido creada :D',
+            appointment
+        });
 
     } catch (error) {
         res.status(500).json({
             success: false,
-            msg: "ESTA MAL, EN QUE ESTA MAL, EN ALGO :D",
+            msg: "Error, algo salió mal :D",
             error
-        })
+        });
     }
-}
+};
